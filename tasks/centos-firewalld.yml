@@ -1,0 +1,21 @@
+---
+
+# NOTE: This playbook *adds* rules.
+# It does not delete existing rules.
+
+# Strategy:
+# Use "dmz" zone and add http/https and munin-node.
+# Make dmz the default policy.
+
+- name: Enable firewalld
+  service: name=firewalld state=started enabled=yes
+
+- name: Allow http/https
+  command: firewall-cmd --permanent --zone=public --add-port={{ item }}/tcp
+  with_items: 
+    - "{{ minio_server_port }}"
+    - "{{ minio_console_port }}"
+
+
+- name: Bounce firewalld
+  service: name=firewalld state=restarted

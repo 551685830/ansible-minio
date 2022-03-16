@@ -1,5 +1,8 @@
 ---
 
+- include_tasks: centos-firewalld.yml
+  when: minio_install_server
+
 - include_tasks: install-server.yml
   when: minio_install_server
 

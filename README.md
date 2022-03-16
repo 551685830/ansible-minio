@@ -82,10 +82,11 @@ Example:
 
 ```yaml
 minio_server_datadirs:
-  - '/minio-data'
+  - '/data1/minio'
+  - '/data2/minio'
 
 minio_server_args:
-  - 'https://server{1...4}/minio-data'
+  - 'http://test-minio{1...4}.ciic-cloud.cn:9000/data{1...2}/minio'
 ```
 
 Additional environment variables to be set in MinIO server environment
@@ -94,6 +95,7 @@ Additional environment variables to be set in MinIO server environment
 minio_server_env_extra: |
   MINIO_REGION_NAME=us-east-1
   MINIO_API_REQUESTS_MAX=1600
+  MINIO_SERVER_URL="http://test-minio.ciic-cloud.cn:9000"
 ```
 
 Additional CLI options that must be appended to the minio server start command.
@@ -123,13 +125,24 @@ None.
 ## Example Playbook
 
 ```yaml
+---
 - name: "Install MinIO"
   hosts: all
+  any_errors_fatal: true
   become: yes
   roles:
-    - { role: minio }
+    - ansible-minio
   vars:
-    minio_server_datadirs: [ "/minio1" ]
+	  minio_access_key: "minioadmin"
+    minio_secret_key: "CiiC@65613920MiniO"
+	  minio_server_datadirs:
+	    - '/data1/minio'
+	    - '/data2/minio'
+	  minio_server_args:
+	    - 'http://test-minio{5...8}.ciic-cloud.cn:9000/data{1...2}/minio'
+    minio_server_env_extra: |
+      MINIO_API_REQUESTS_MAX=1600
+      MINIO_SERVER_URL="http://test-minio.ciic-cloud.cn:9000"
 ```
 
 ## Changelog
